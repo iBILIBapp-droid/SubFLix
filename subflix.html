@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Subflix — All Your Streams, One Place</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="subflix.css">
+</head>
+<body>
+
+  <!-- ══════════════════════════════
+       SELECTION SCREEN
+  ══════════════════════════════ -->
+  <section id="selection-screen">
+    <div class="sel-glow"></div>
+    <header>
+      <div class="sel-logo">Subflix</div>
+      <div class="sel-tagline">All your streams &nbsp;·&nbsp; One place</div>
+    </header>
+    <p class="sel-prompt">Select a streaming service to begin</p>
+    <div class="sel-bar">
+
+      <button class="sel-btn" onclick="launchStream('N','Netflix')">
+        <span class="sel-icon">🅽</span>
+        Netflix
+      </button>
+
+      <button class="sel-btn" onclick="launchStream('P','Prime Video')">
+        <span class="sel-icon">📦</span>
+        Prime Video
+      </button>
+
+      <button class="sel-btn" onclick="launchStream('D','Disney+')">
+        <span class="sel-icon">✦</span>
+        Disney+
+      </button>
+
+      <button class="sel-btn" onclick="launchStream('H','Hulu')">
+        <span class="sel-icon">🟢</span>
+        Hulu
+      </button>
+
+      <button class="sel-btn" onclick="launchStream('M','HBO Max')">
+        <span class="sel-icon">◈</span>
+        HBO Max
+      </button>
+
+      <button class="sel-btn" onclick="launchStream('A','Apple TV+')">
+        <span class="sel-icon">🍎</span>
+        Apple TV+
+      </button>
+
+      <button class="sel-btn" onclick="launchStream('R','Paramount+')">
+        <span class="sel-icon">⛰</span>
+        Paramount+
+      </button>
+
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════
+       IFRAME VIEWER
+  ══════════════════════════════ -->
+  <div id="iframe-view">
+    <div class="iframe-topbar">
+      <div class="iframe-logo">Subflix</div>
+      <span class="iframe-svc" id="svc-label">Netflix</span>
+      <div class="iframe-spacer"></div>
+      <button class="back-btn" onclick="goBack()">&#8592; Back</button>
+    </div>
+    <div class="iframe-wrap">
+      <div class="iframe-loader" id="iloader">
+        <div class="loader-logo">Subflix</div>
+        <div class="loader-ring"></div>
+        <div class="loader-txt">Connecting&hellip;</div>
+      </div>
+      <iframe
+        id="stream-frame"
+        src="about:blank"
+        allow="fullscreen; autoplay; encrypted-media"
+        allowfullscreen
+        sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-presentation"
+        referrerpolicy="no-referrer"
+        title="Subflix Stream"
+      ></iframe>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════
+       DASHBOARD
+  ══════════════════════════════ -->
+  <div id="dashboard">
+
+    <!-- Navbar -->
+    <nav>
+      <div class="nav-logo">Subflix</div>
+      <ul class="nav-links">
+        <li><a href="#" class="active">Home</a></li>
+        <li><a href="#">TV Shows</a></li>
+        <li><a href="#">Movies</a></li>
+        <li><a href="#">New &amp; Hot</a></li>
+        <li><a href="#">My List</a></li>
+      </ul>
+      <div class="nav-spacer"></div>
+      <div class="searchbox">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none"
+             stroke="#555" stroke-width="2.5" stroke-linecap="round">
+          <circle cx="11" cy="11" r="8"/>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+        </svg>
+        <input type="text" placeholder="Search titles&hellip;" autocomplete="off">
+      </div>
+      <div class="avatar">S</div>
+    </nav>
+
+    <!-- Hero -->
+    <section class="hero">
+      <div class="hero-bg"></div>
+      <div class="hero-art">
+        <div class="hero-grid">
+          <div class="gp"></div><div class="gp"></div>
+          <div class="gp"></div><div class="gp"></div>
+          <div class="gp"></div><div class="gp"></div>
+          <div class="gp"></div><div class="gp"></div>
+          <div class="gp"></div><div class="gp"></div>
+          <div class="gp"></div><div class="gp"></div>
+        </div>
+      </div>
+      <div class="hero-content">
+        <div class="hero-badge">&#9889; Featured Tonight</div>
+        <h1 class="hero-title">Dark<br><em>Horizon</em></h1>
+        <div class="hero-meta">
+          <span class="rt">&#9733; 9.1</span>
+          <span>2025</span>
+          <span>2h 17m</span>
+          <span>Sci-Fi &middot; Thriller</span>
+        </div>
+        <p class="hero-desc">
+          When quantum gates fracture spacetime, a lone detective must unravel
+          a conspiracy spanning every version of Earth before all timelines
+          collapse forever.
+        </p>
+        <div class="hero-btns">
+          <button class="btn-play">&#9658; Play Now</button>
+          <button class="btn-info">&#8505; More Info</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Main Content -->
+    <div class="content">
+
+      <!-- Service shortcuts -->
+      <div style="margin-top:1rem">
+        <h2 class="row-title" style="margin-bottom:1rem">Browse by Service</h2>
+        <div class="chips-row">
+          <div class="chip" onclick="launchStream('N','Netflix')">
+            <span class="chip-icon">🅽</span>Netflix
+          </div>
+          <div class="chip" onclick="launchStream('P','Prime Video')">
+            <span class="chip-icon">📦</span>Prime Video
+          </div>
+          <div class="chip" onclick="launchStream('D','Disney+')">
+            <span class="chip-icon">✦</span>Disney+
+          </div>
+          <div class="chip" onclick="launchStream('H','Hulu')">
+            <span class="chip-icon">🟢</span>Hulu
+          </div>
+          <div class="chip" onclick="launchStream('M','HBO Max')">
+            <span class="chip-icon">◈</span>HBO Max
+          </div>
+          <div class="chip" onclick="launchStream('A','Apple TV+')">
+            <span class="chip-icon">🍎</span>Apple TV+
+          </div>
+          <div class="chip" onclick="launchStream('R','Paramount+')">
+            <span class="chip-icon">⛰</span>Paramount+
+          </div>
+        </div>
+      </div>
+
+      <!-- Row 1 — Trending -->
+      <div class="row-wrap">
+        <div class="row-head">
+          <h2 class="row-title">&#128293; Trending Now</h2>
+          <span class="row-cta">See all &rarr;</span>
+        </div>
+        <div class="card-scroller" id="r1"></div>
+      </div>
+
+      <!-- Row 2 — Top Picks -->
+      <div class="row-wrap">
+        <div class="row-head">
+          <h2 class="row-title">&#11088; Top Picks for You</h2>
+          <span class="row-cta">See all &rarr;</span>
+        </div>
+        <div class="card-scroller" id="r2"></div>
+      </div>
+
+      <!-- Row 3 — New Releases -->
+      <div class="row-wrap">
+        <div class="row-head">
+          <h2 class="row-title">&#127381; New Releases</h2>
+          <span class="row-cta">See all &rarr;</span>
+        </div>
+        <div class="card-scroller" id="r3"></div>
+      </div>
+
+      <!-- Row 4 — Award Winners -->
+      <div class="row-wrap">
+        <div class="row-head">
+          <h2 class="row-title">&#127942; Award Winners</h2>
+          <span class="row-cta">See all &rarr;</span>
+        </div>
+        <div class="card-scroller" id="r4"></div>
+      </div>
+
+    </div><!-- /content -->
+  </div><!-- /dashboard -->
+
+  <script src="subflix.js"></script>
+</body>
+</html>
