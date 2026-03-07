@@ -1,7 +1,5 @@
 /**
  * SUBFLIX REVERSE PROXY — server.js
- * Serves front-end files from the same directory OR a /public subfolder.
- * Proxies onoflix, rewrites HTML, strips anti-iframe headers.
  */
 
 const express  = require("express");
@@ -13,25 +11,18 @@ const app      = express();
 const PORT     = process.env.PORT || 3000;
 const UPSTREAM = "https://onoflix.live";
 
-/* ── Detect where front-end files live ──────────────────────
-   Works whether files are in the repo root or in /public
+/* ── Where are the front-end files? ─────────────────────────
+   Checks for /public subfolder first, falls back to repo root
    ────────────────────────────────────────────────────────── */
-const publicDir = fs.existsSync(path.join(__dirname, "public"))
+const publicDir = fs.existsSync(path.join(__dirname, "public", "subflix.html"))
   ? path.join(__dirname, "public")
   : __dirname;
-
-console.log("Serving static files from:", publicDir);
 
 /* ── HTML rewriter ──────────────────────────────────────── */
 function rewriteHTML(html) {
   return html
-    // Brand name replacements
     .replace(/onoflix/gi, "Subflix")
-
-    // Rewrite absolute onoflix URLs to stay inside proxy
     .replace(/https?:\/\/onoflix\.live/gi, "")
-
-    // Inject CSS to hide Discord, Telegram, back buttons
     .replace(
       /<\/head>/i,
       `<style>
@@ -47,7 +38,7 @@ function rewriteHTML(html) {
     );
 }
 
-/* ── Proxy: /proxy/* → onoflix.live ────────────────────── */
+/* ── 1. Proxy middleware FIRST ──────────────────────────── */
 app.use(
   "/proxy",
   createProxyMiddleware({
@@ -63,20 +54,16 @@ app.use(
         }
         return responseBuffer;
       }),
-
       proxyRes(proxyRes) {
-        // Fix redirect headers
         if (proxyRes.headers["location"]) {
           proxyRes.headers["location"] = proxyRes.headers["location"]
             .replace(/https?:\/\/onoflix\.live/gi, "/proxy");
         }
-        // Strip anti-embedding headers
         delete proxyRes.headers["x-frame-options"];
         delete proxyRes.headers["content-security-policy"];
         delete proxyRes.headers["content-security-policy-report-only"];
         proxyRes.headers["access-control-allow-origin"] = "*";
       },
-
       error(err, req, res) {
         console.error("Proxy error:", err.message);
         res.status(502).send("Proxy error: " + err.message);
@@ -85,21 +72,25 @@ app.use(
   })
 );
 
-/* ── Serve static front-end files ───────────────────────── */
+/* ── 2. Static files SECOND ─────────────────────────────── */
 app.use(express.static(publicDir));
 
-/* ── Fallback: always serve subflix.html for any route ──── */
-app.get("*", (req, res) => {
-  const indexPath = path.join(publicDir, "subflix.html");
-  if (fs.existsSync(indexPath)) {
-    res.sendFile(indexPath);
+/* ── 3. Root route — explicitly serve subflix.html ──────── */
+app.get("/", (req, res) => {
+  res.sendFile(path.join(publicDir, "subflix.html"));
+});
+
+/* ── 4. Any other unknown route → subflix.html ──────────── */
+app.use((req, res) => {
+  const file = path.join(publicDir, "subflix.html");
+  if (fs.existsSync(file)) {
+    res.sendFile(file);
   } else {
-    res.status(404).send(
-      "subflix.html not found. Make sure it's in the repo root or in a /public folder."
-    );
+    res.status(404).send("subflix.html not found in: " + publicDir);
   }
 });
 
 app.listen(PORT, () => {
-  console.log(`Subflix running → http://localhost:${PORT}`);
+  console.log("Subflix proxy running on port", PORT);
+  console.log("Serving files from:", publicDir);
 });
